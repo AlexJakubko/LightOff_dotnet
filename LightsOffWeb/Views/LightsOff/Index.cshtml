@@ -1,0 +1,160 @@
+﻿
+@using LightsOffWeb.Models;
+@model LightsOffModel
+
+    <div class="row">
+        <div class="col-md-9 col-sm-12">
+      
+            <div class="borders">
+                @if (!Model.Field.IsSolved())
+                {
+                    <div class="game-action">
+                        <div class="actual_score">
+                            <p>
+                                Score:
+                                <span>@Model.Field.Score</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="game_field">
+                        <table>
+                            @for (var row = 0; row < Model.Field.RowCount; row++)
+                            {
+                                <tr>
+                                    @for (var column = 0; column < Model.Field.ColumnCount; column++)
+                                    {
+                                        var tile = Model.Field[row, column];
+                                        <td>
+                                            <a href="/LightsOff/ShineDots?row=@(row)&column=@(column)">
+                                                <img width="40px" src="~/images/lightsoff/@(tile.GetState()).png" />
+                                            </a>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </div>
+
+                    <div class="game-action-buttons">
+                        <a class="form-button" href="/LightsOff/New?level=@(Model.Field.Level)">
+                            <button type="submit" class="btn btn-warning">Start again same level</button>
+                        </a>
+                        <form class="form-button" method="get" action="/LightsOff/New">
+                            <button type="submit" class="btn btn-primary">Open menu</button>
+                        </form>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="menu-grid">
+                        <div class="play_menu">
+                            <form method="get" action="/LightsOff/New">
+                                <label for="PlayersLevel">Level</label>
+                                <input name="level" id="PlayersLevel" type="number" max="10" min="1" required>
+                                <button type="submit" class="btn btn-success">Play</button>
+                            </form>
+                            @if (!Model.IsRate && Model.IsLogged)
+                            {
+                                <div class="rating rating2">
+                                    @for (var x = 5; x > 0; x--)
+                                    {<a href="/LightsOff/AddRating?rating=@x" title="Give @x stars">★</a>
+                                    }
+                                </div>
+                            }
+                            @if (Model.IsRate && Model.IsLogged)
+                            {
+                                <div>
+                                    <div class="Menu-text">Your rate:</div>
+                                    <div class="rating rating2">
+                                        @for (var x = 5; x > 0; x--)
+                                        {
+                                            if (x <= Model.PlayersRating)
+                                            {
+                                                <a style="color:orange" href="/LightsOff/AddRating?rating=@x" title="Give @x stars">★</a>
+                                            }
+                                            else
+                                            {
+                                                <a href="/LightsOff/AddRating?rating=@x" title="Give @x stars">★</a>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="Menu-text">
+                                        Avg rating:@Model.AvgRating ★
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="comments-grid">
+                <table class="table table-sm table-design-comments">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Comment</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{int i = 1; }
+                        @foreach (var comment in Model.Comments)
+                        {
+                        <tr class="table-warning">
+                            <td>@i</td>
+                            <td>@(comment.Name) </td>
+                            <td>@(comment.Message) </td>
+                            <td>@(comment.TimeOfComment) </td>
+                            @{i++;}
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                @if (Model.IsLogged)
+                {
+                <form method="get" action="/LightsOff/Addcomment">
+                    <div>
+                        <label for="PlayersComment">Comment</label>
+                        <input name="comment" id="PlayersComment" type="text" max="50" min="1" required>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary">Add comment</button>
+                    </div>
+                </form>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-12" align="center">
+            <div class="table-responsible table-gray table-div">
+                <table class="table table-sm table-design-score">
+
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Score</th>
+                            <th scope="col">Level</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{i = 1; }
+                        @foreach (var score in Model.Scores)
+                        {
+                            <tr class="table-success">
+                                <td>@i</td>
+                                <td>@(score.Name) </td>
+                                <td>@(score.Points) </td>
+                                <td>@(score.Level) </td>
+                                @{i++;}
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>

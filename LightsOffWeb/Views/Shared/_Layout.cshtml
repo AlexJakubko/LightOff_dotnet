@@ -1,0 +1,63 @@
+﻿
+@using LightsOffWeb.Models;
+@model LightsOffModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta name="viewport" content="width=device-width, initial-scale=1.0" />*@
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <title>@ViewData["Title"] - LightsOffWeb</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="container-grid">
+
+        <nav class="navbar bg-light navbar-expand-lg navbar-light">
+            <a asp-action="Index">
+                <h1 class="logo"><img class="icon" src="~/images/lightsoff/lightbulb.png">Lights Off</h1>
+            </a>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <div class="login-bar">
+                    @if (!Model.IsLogged)
+                    {
+                        <div>
+                            <ul class="nav navbar-nav">
+                                <div class="login">
+                                    <form method="get" action="/LightsOff/AddUser">
+                                        <label for="PlayersName" placeholder="Name">User</label>
+                                        <input name="login" id="PlayersName" type="text" required>
+                                        <button type="submit" class="btn btn-success">Sign in</button>
+                                    </form>
+                                </div>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            You are logged as @Model.PlayersName.
+                            <a href="/LightsOff">
+                                <button type="button" class="btn btn-danger">Logout</button>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </nav>
+
+
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
